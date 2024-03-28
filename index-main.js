@@ -39,7 +39,7 @@ function renderProducts(product, row) {
             <p class="card-text">${product.description}</p>
             <div class="card-button">
                 <h6 class="item-price">${product.price} $</h6>                
-                <a href="form.html?productId=${product.id}"><button class="addToCartBtn" >Buy Now</button><a/>                
+                <button class="addToCartBtn" id="${product.id}" >Add To Cart</button><a/>                
             </div>
         </div>`
 
@@ -48,25 +48,27 @@ function renderProducts(product, row) {
   row.appendChild(col)
 
   //grab the item ID
-  /*
-  const buyNowBtn = card.querySelector('.addToCartBtn')
-  buyNowBtn.addEventListener('click', function (event) {
-    //kanske inte behövs här
-    event.preventDefault()
+  
+  const addToCartBtn = card.querySelector('.addToCartBtn')
+  addToCartBtn.addEventListener('click', addToCart)
 
-    //set this as the id of the product that we want to carry through purchase and
-    //confirmation screen
-    const productId = event.target.id
-    console.log('ProductID to be sent over: ' + productId)
-    buyNowProductId = productId
-  })
-  */
 }
 
-/*
+const addToCart = (event) => {
+  console.log('Target ID:', event.target.id);
+  event.preventDefault()
+  const productId = event.target.id
 
-<a href="form.html?productId=${product.id}" class="addToCartBtn" id="${product.id}"><button type="button"Buy Now</button></a>
+  const productInCart = {
+    id: productId
+  }
 
-class="addToCartBtn"
+  let productsInCart = []
 
-*/
+  if(localStorage.getItem('productsInCart') !== null){   
+    productsInCart = JSON.parse(localStorage.getItem('productsInCart'))
+  } 
+
+  productsInCart.push(productInCart)
+  localStorage.setItem('productsInCart', JSON.stringify(productsInCart))
+}
