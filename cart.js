@@ -1,123 +1,90 @@
-fetch('https://fakestoreapi.com/products')
+fetch("https://fakestoreapi.com/products")
   .then((response) => response.json())
   .then((data) => {
     let row
-    console.log(typeof data[0].id);
-    //get the ids
+
+    //Get the id's of the products in localstorage
     let productsInCart = []
-    if (localStorage.getItem('productsInCart') !== null) {
-      productsInCart = JSON.parse(localStorage.getItem('productsInCart'))
+    if (localStorage.getItem("productsInCart") !== null) {
+      productsInCart = JSON.parse(localStorage.getItem("productsInCart"));
     }
 
-    console.log(typeof productsInCart[0].id);
+    //Filter the products from the API to only render the ones that we have in localstorage
     const filteredProducts = data.filter((product) => {
-      return productsInCart.some((cartProduct) => Number(cartProduct.id) === product.id)
+      return productsInCart.some(
+        (cartProduct) => Number(cartProduct.id) === product.id
+      );
+    });
+
+    //Get the amount of products that have the same id's into an array
+    const idCounts = {}
+    productsInCart.forEach((item) => {
+      const id = item.id
+      idCounts[id] = (idCounts[id] || 0) + 1;
     })
 
-    console.log(filteredProducts);
+    //Get access to set the total order value text
+    const orderPriceText = document.getElementById("total-price-text");
+    let orderPrice = 0;
 
-    // Iterate through the products and create cards
+    //Iterate through the products and render them dynamically
     filteredProducts.forEach((product, index) => {
-      console.log(product);
+
+      //Rows with 4 items per row
       if (index % 4 === 0) {
-        row = document.createElement('div')
-        row.classList.add('row')
-        row.classList.add('product-container')
-        //row.classList.add('mb-4')
-        document.getElementById('productDisplay').appendChild(row)
+        row = document.createElement("div");
+        row.classList.add("row");
+        row.classList.add("product-container");
+        document.getElementById("productDisplay").appendChild(row);
       }
 
-      renderProducts(product, row)
-    })
+      //Append to the total order value
+      orderPrice += product.price;
+
+      //Render the products
+      renderProducts(product, row, idCounts);
+    });
+
+    //Set the total order value text
+    orderPriceText.innerHTML = `Att betala: ${orderPrice} $`;
   })
   .catch((error) => {
-    console.error('Error fetching products:', error)
-  })
+    console.error("Error fetching products:", error);
+  });
 
-function renderProducts(product, row) {
-  const col = document.createElement('div')
-  col.classList.add('col-sm-6')
-  col.classList.add('col-md-3')
-  col.classList.add('col-lg-3')
+function renderProducts(product, row, idCounts) {
+  let counts = idCounts[product.id];
 
-  const card = document.createElement('div')
-  card.classList.add('card')
+  const col = document.createElement("div");
+
+  const productInCart = document.createElement("div");
 
   const cardContent = `
-      <img src="${product.image}" class="card-image-top" alt="${product.title}">
-          <div class="card-body">
-              <h6 class="card-title">${product.title}</h6>
-              <p class="card-text">${product.description}</p>
-              <div class="card-button">
-                  <h6 class="item-price">${product.price} $</h6>                
-                  <button onClick="addToCart(${product.id})"class="addToCartBtn" >Add To Cart</button><a/>                
-              </div>
-          </div>`
+    <div class="container cart-container-1">
+      <img class="cart-image"src="${product.image}" alt="${product.title}"
+      <h5 class="cart-title">${product.title}</h5>
+    </div>
+    <div class="container cart-container-2">
+      <div class="cart-price-container">
+        <p class="cart-price">${product.price} $<p>
+      </div>
+      <div class="cart-button-container">
+        <btn class="add-item fa-solid fa-circle-plus" type="button" id="${product.id}"></btn>
+        <p>${counts}</p>
+        <btn class="remove-item fa-solid fa-circle-minus" type="button" id="${product.id}"></btn>
+      </div>
+      <hr>
+    </div>`;
 
-  card.innerHTML = cardContent
-  col.appendChild(card)
-  row.appendChild(col)
+  productInCart.innerHTML = cardContent;
+  col.appendChild(productInCart);
+  row.appendChild(col);
 }
 
-//grab the item ID
-/*
-    const addToCartBtn = card.querySelector('.addToCartBtn')
-    addToCartBtn.addEventListener('click', function (event) {
-      //kanske inte behövs här
-      event.preventDefault()
-  
-      //set this as the id of the product that we want to carry through purchase and
-      //confirmation screen
-      const productId = event.target.id
-      console.log('ProductID to be sent over: ' + productId)
-      buyNowProductId = productId
-    })
+//Add another one of the same item into localstorage
+const addOneProduct = (event) => {};
 
-/*
-document.getElementById('myForm').addEventListener('submit', saveBookmark)
+//Remove one of the same item from localstorage
+const removeOneProduct = (event) => {};
 
-function saveBookmark(e) {
-  const siteName = document.getElementById('siteName').value
-  const siteUrl = document.getElementById('siteUrl').value
-
-  const bookmark = {
-    name: siteName,
-    url: siteUrl,
-  }
-
-  e.preventDefault()
-
-  if (localStorage.getItem('bookmarks') === null) {
-    const bookmarks = []
-    bookmarks.push(bookmark)
-    localStorage.setItem('bookmarks', JSON.stringify(bookmark))
-  } else {
-    const bookmarks = JSON.parse(localStorage.getItem('bookmarks'))
-    bookmarks.push(bookmark)
-    localStorage.setItem('bookmarks', JSON.stringify(bookmarks))
-  }
-}
-
-function fetchBookmarks() {
-  const bookmarks = JSON.parse(localStorage.getItem('bookmarks'))
-  console.log(bookmarks)
-
-  const bookmarksResults = document.getElementById('bookmarksResults')
-
-  bookmarksResults.innerHTML = ''
-
-  for (let i = 0; i < bookmarks.length; i++) {
-    const name = bookmarks[i].name
-    const url = bookmarks[i].url
-
-    bookmarksResults.innerHTML +=
-      '<div class="well">' +
-      '<h3>' +
-      name +
-      ' <a class="btn btn-default" target = "_blank" href="' +
-      url +
-      '">Visit</a>'
-    '</h3>' + '</div>'
-  }
-}
-*/
+//TODO fix ordervalue to calculate for more than 1 of the same item
