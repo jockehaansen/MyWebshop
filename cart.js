@@ -1,63 +1,62 @@
-fetch("https://fakestoreapi.com/products")
+fetch('https://fakestoreapi.com/products')
   .then((response) => response.json())
   .then((data) => {
     let row
 
     //Get the id's of the products in localstorage
     let productsInCart = []
-    if (localStorage.getItem("productsInCart") !== null) {
-      productsInCart = JSON.parse(localStorage.getItem("productsInCart"));
+    if (localStorage.getItem('productsInCart') !== null) {
+      productsInCart = JSON.parse(localStorage.getItem('productsInCart'))
     }
 
     //Filter the products from the API to only render the ones that we have in localstorage
     const filteredProducts = data.filter((product) => {
       return productsInCart.some(
         (cartProduct) => Number(cartProduct.id) === product.id
-      );
-    });
-
-    //Get the amount of products that have the same id's into an array
-    const idCounts = {}
-    productsInCart.forEach((item) => {
-      const id = item.id
-      idCounts[id] = (idCounts[id] || 0) + 1;
+      )
     })
 
     //Get access to set the total order value text
-    const orderPriceText = document.getElementById("total-price-text");
-    let orderPrice = 0;
+    const orderPriceText = document.getElementById('total-price-text')
+    let orderPrice = 0
+
+    //Get the amount of products that have the same id's into an array
+    console.log('productsincart', productsInCart)
+    const idCounts = {}
+    productsInCart.forEach((item) => {
+      const id = item.id
+      idCounts[id] = (idCounts[id] || 0) + 1
+      orderPrice += parseFloat(item.price)
+    })
+    console.log(orderPrice)
 
     //Iterate through the products and render them dynamically
     filteredProducts.forEach((product, index) => {
-
       //Rows with 4 items per row
       if (index % 4 === 0) {
-        row = document.createElement("div");
-        row.classList.add("row");
-        row.classList.add("product-container");
-        document.getElementById("productDisplay").appendChild(row);
+        row = document.createElement('div')
+        row.classList.add('row')
+        row.classList.add('product-container')
+        document.getElementById('productDisplay').appendChild(row)
       }
 
-      //Append to the total order value
-      orderPrice += product.price;
-
       //Render the products
-      renderProducts(product, row, idCounts);
-    });
+      renderProducts(product, row, idCounts)
+    })
 
     //Set the total order value text
-    orderPriceText.innerHTML = `Att betala: ${orderPrice} $`;
+    orderPriceText.innerHTML = `Att betala: ${orderPrice.toFixed(2)} $`
   })
   .catch((error) => {
-    console.error("Error fetching products:", error);
-  });
+    console.error('Error fetching products:', error)
+  })
 
 function renderProducts(product, row, idCounts) {
-  let counts = idCounts[product.id];
+  let counts = idCounts[product.id]
 
-  const col = document.createElement("div");
+  const col = document.createElement('div')
 
-  const productInCart = document.createElement("div");
+  const productInCart = document.createElement('div')
 
   const cardContent = `
     <div class="container cart-container-1">
@@ -74,17 +73,17 @@ function renderProducts(product, row, idCounts) {
         <btn class="remove-item fa-solid fa-circle-minus" type="button" id="${product.id}"></btn>
       </div>
       <hr>
-    </div>`;
+    </div>`
 
-  productInCart.innerHTML = cardContent;
-  col.appendChild(productInCart);
-  row.appendChild(col);
+  productInCart.innerHTML = cardContent
+  col.appendChild(productInCart)
+  row.appendChild(col)
 }
 
 //Add another one of the same item into localstorage
-const addOneProduct = (event) => {};
+const addOneProduct = (event) => {}
 
 //Remove one of the same item from localstorage
-const removeOneProduct = (event) => {};
+const removeOneProduct = (event) => {}
 
 //TODO fix ordervalue to calculate for more than 1 of the same item

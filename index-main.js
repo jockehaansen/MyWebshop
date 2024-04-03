@@ -39,7 +39,7 @@ function renderProducts(product, row) {
             <p class="card-text">${product.description}</p>
             <div class="card-button">
                 <h6 class="item-price">${product.price} $</h6>                
-                <button class="addToCartBtn" id="${product.id}" >Add To Cart</button><a/>                
+                <button class="addToCartBtn" id="${product.id}" data-price="${product.price}" >Add To Cart</button><a/>                
             </div>
         </div>`
 
@@ -48,26 +48,26 @@ function renderProducts(product, row) {
   row.appendChild(col)
 
   //grab the item ID
-  
+
   const addToCartBtn = card.querySelector('.addToCartBtn')
   addToCartBtn.addEventListener('click', addToCart)
-
 }
 
 const addToCart = (event) => {
-  console.log('Target ID:', event.target.id);
   event.preventDefault()
   const productId = event.target.id
+  const productPrice = event.target.getAttribute('data-price')
 
   const productInCart = {
-    id: productId
+    id: productId,
+    price: productPrice,
   }
 
   let productsInCart = []
 
-  if(localStorage.getItem('productsInCart') !== null){   
+  if (localStorage.getItem('productsInCart') !== null) {
     productsInCart = JSON.parse(localStorage.getItem('productsInCart'))
-  } 
+  }
 
   productsInCart.push(productInCart)
   localStorage.setItem('productsInCart', JSON.stringify(productsInCart))
