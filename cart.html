@@ -12,8 +12,9 @@
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
-    ></script>
+    ></script>    
     <link rel="stylesheet" href="css\index-style.css" />
+    <link rel="stylesheet" href="css/form.css">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -22,6 +23,7 @@
     />
     <script src="https://kit.fontawesome.com/e381b12111.js" crossorigin="anonymous"></script>
     <script src="cart.js"></script>
+    <script src="form.js"></script>
 </head>
 <body onload="fetchAll()"">
     <header id="main-header">
@@ -30,8 +32,8 @@
       <nav>
         <ul id="main-navbar">
           <li><a href="index.html">Home</a></li>
-          <li><a href="cart.html">About Us</a></li>
-          <li><a href="#">Cart</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="cart.html">Cart</a></li>
         </ul>
       </nav>
 
@@ -41,25 +43,43 @@
           <div class="col-lg-6 p-3 border border-1 bg-white">
             <h4>Delivery information</h4>
 
-            <form action="#">
+            <form action="confirmation.html">
                 <div class="mb-3">
                     <label for="name">Name:</label>
-                    <input type="text" class="form-control" id="name" placeholder="Ange för- & efternamn" name="name">
+                    <input type="text" class="form-control" id="name" oninput="validateForm()" placeholder="Ange för- & efternamn" name="name" required>
+                    <div id="namn_error" class="valid-form">
+                      Namnet är för kort/lång
+                    </div>
                 </div>
               <div class="mb-3">
                     <label for="phoneNumber">Phone:</label>
-                    <input type="number" class="form-control" id="phoneNumber" placeholder="Ange telefonnr" name="Telefonnr">
+                    <input type="number" class="form-control" id="phoneNumber" oninput="validateForm()" placeholder="Ange telefonnr" name="phoneNumber" required>
+                    <p id="telefonnr_error" class="valid-form">
+                      Telefonnr får bara innehålla siffror, bindestreck och paranteser
+                    </p>
               </div>
               <div class="mb-3">
-                <label for="adress">Address:</label>
-                <input type="text" class="form-control" id="adress" placeholder="Ange adress" name="Adress">
+                <label for="address">Address:</label>
+                <input type="text" class="form-control" id="address"  oninput="validateForm()" placeholder="Ange adress" name="address" required>
+                <p id="adress_error" class="valid-form">
+                  Adressen är för kort/lång
+                </p>
+                
             </div>
               <div class="mb-3">
                     <label for="email">Email:</label>
-                    <input type="email" class="form-control" id="email" placeholder="Ange din e-post" name="email">
+                    <input type="email" class="form-control" id="email" oninput="validateForm()" placeholder="Ange din e-post" name="email" required>
+                    <p id="email_error" class="valid-form">
+                      E-postadressen måste innehålla '@' och max 50 tecken
+                    </p>
+              </div>
+              <hr>
+              <div class="text-center">
+                <button type="submit" class="addToCartBtn cart-btn" id="submitButton" disabled >Beställ</button>
+    
               </div>
 
-            </form>
+            
           </div>
 
           <div class="col-lg-6 p-3 border border-1 bg-white">
@@ -70,11 +90,8 @@
             <h3 id="total-price-text">Att betala:</h3>
           </div>
           
-          <div class="text-center">
-            <button type="submit" class="btn btn-primary p-2 m-5 w-25 align-center">Beställ</button>
-
-          </div>
-
+          
+        </form>
       </div>
     </div>
 </body>

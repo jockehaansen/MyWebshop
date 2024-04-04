@@ -1,4 +1,8 @@
-.card{
-    border:none;
-    max-width: 250px;
+.card {
+  border: none;
+  max-width: 250px;
+}
+.valid-form {
+  font-size: 12px;
+  display: none;
 }
